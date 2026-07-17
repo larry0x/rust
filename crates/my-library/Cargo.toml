@@ -1,0 +1,12 @@
+[package]
+authors       = { workspace = true }
+documentation = { workspace = true }
+edition       = { workspace = true }
+license       = { workspace = true }
+name          = "my-library"
+repository    = { workspace = true }
+version       = { workspace = true }
+
+[dependencies]
+
+[dev-dependencies]

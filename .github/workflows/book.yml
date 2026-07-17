@@ -1,0 +1,49 @@
+# Based on:
+# https://github.com/rust-lang/mdBook/wiki/Automated-Deployment%3A-GitHub-Actions
+
+name: Book
+
+permissions: {}
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/book.yml
+      - book/**
+      - book.toml
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      pages: write    # To push to a GitHub Pages site
+      id-token: write # To update the deployment status
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Rust toolchain
+        run: rustup default stable
+
+      # This builds mdbook from source, which is really slow.
+      # We should consider using: https://github.com/peaceiris/actions-mdbook
+      # but it doesn't support the katex preprocessor.
+      - name: Install mdbook and preprocessors
+        run: cargo install mdbook@0.5.4 mdbook-katex@0.10.0-alpha mdbook-mermaid@0.17.0
+
+      - name: Build book
+        run: mdbook build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ./target/book/
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

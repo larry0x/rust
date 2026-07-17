@@ -1,0 +1,48 @@
+[workspace]
+members  = ["crates/my-library"]
+resolver = "3"
+
+[workspace.package]
+authors       = ["Larry Engineer <gm@larry.engineer>"]
+documentation = "https://larry0x.github.io/rust/"
+edition       = "2024"
+license       = "TBD"
+repository    = "https://github.com/larry0x/rust"
+version       = "0.0.0"
+
+[workspace.dependencies]
+
+[profile.release]
+
+# Compile each crate as a single codegen unit: slower build, better optimization.
+codegen-units = 1
+
+# Do not emit debug info, reducing binary size.
+debug = false
+
+# Strip `debug_assert!`-style assertions.
+debug-assertions = false
+
+# Disable incremental compilation: slightly better codegen, smaller `target`
+# directory.
+incremental = false
+
+# Perform "fat" link-time optimization across all crates: slower build, faster
+# and smaller binary.
+lto = true
+
+# Apply the highest level of optimizations, favoring runtime speed.
+opt-level = 3
+
+# Panic on integer overflow instead of silently wrapping, even in release mode.
+overflow-checks = true
+
+# On panic, abort the process instead of unwinding: smaller binary, but panics
+# can't be caught.
+panic = "abort"
+
+# Do not embed dynamic library search paths (rpath) in the executable: no build
+# machine paths leak into the binary, but shared libraries outside the system's
+# standard search paths won't be found at runtime. Rarely relevant, as Rust
+# links statically by default.
+rpath = false

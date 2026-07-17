@@ -1,0 +1,115 @@
+name: Rust
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/rust.yml"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "clippy.toml"
+      - "rustfmt.toml"
+  pull_request:
+    branches:
+      - "*"
+    paths:
+      - ".github/workflows/rust.yml"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "clippy.toml"
+      - "rustfmt.toml"
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain
+        run: rustup toolchain install nightly --component rustfmt
+
+      - name: Run rustfmt checks
+        run: rustup run nightly cargo fmt --check --all
+
+  lint:
+    name: Lint
+    needs: [fmt]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain
+        run: rustup component add clippy
+
+      - name: Run clippy
+        run: cargo clippy --bins --tests --benches --examples --all-features --all-targets -- -D warnings
+
+  test:
+    name: Test
+    needs: [fmt]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain
+        run: rustup default stable
+
+      - name: Run tests
+        env:
+          RUST_BACKTRACE: 1
+        run: cargo test --all-features --tests -- --nocapture
+
+  lint-without-features:
+    name: Lint without features
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain
+        run: rustup component add clippy
+
+      - name: Run clippy with `--no-default-features` for each crate
+        run: |
+          set -euo pipefail
+          crates=($(cargo metadata --format-version=1 --no-deps | jq -r '.packages[].name'))
+          total=${#crates[@]}
+          for i in "${!crates[@]}"; do
+            crate="${crates[$i]}"
+            echo "[$((i+1))/$total] Checking $crate..."
+            cargo clippy -p "$crate" --bins --tests --benches --examples --no-default-features --all-targets -- -D warnings
+          done

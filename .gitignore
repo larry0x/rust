@@ -1,0 +1,27 @@
+# macOS
+**/.DS_Store
+
+# Git
+.gitattributes
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Agents
+.claude/*
+!.claude/rules/
+!.claude/settings.json
+
+# Envs
+**/*.env
+**/*.vars
+.envrc
+.envrc-old
+
+# Rust
+target/
+
+# Data used in tests, examples, or benchmarks
+**/testdata/

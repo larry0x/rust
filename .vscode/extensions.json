@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "davidanson.vscode-markdownlint",
+    "editorconfig.editorconfig",
+    "fill-labs.dependi",
+    "gruntfuggly.todo-tree",
+    "nefrob.vscode-just-syntax",
+    "redhat.vscode-yaml",
+    "rust-lang.rust-analyzer",
+    "tamasfe.even-better-toml",
+    "usernamehw.errorlens",
+    "yzhang.markdown-all-in-one"
+  ]
+}
