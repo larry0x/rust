@@ -1,9 +1,6 @@
 # macOS
 **/.DS_Store
 
-# Git
-.gitattributes
-
 # VS Code
 .vscode/*
 !.vscode/extensions.json

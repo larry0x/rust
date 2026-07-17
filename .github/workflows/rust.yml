@@ -18,9 +18,10 @@ on:
       - "Cargo.lock"
       - "clippy.toml"
       - "rustfmt.toml"
+      - ".force_rust"
   pull_request:
     branches:
-      - "*"
+      - "**"
     paths:
       - ".github/workflows/rust.yml"
       - "crates/**"
@@ -28,6 +29,7 @@ on:
       - "Cargo.lock"
       - "clippy.toml"
       - "rustfmt.toml"
+      - ".force_rust"
 
 jobs:
   fmt:
@@ -64,7 +66,7 @@ jobs:
         run: rustup component add clippy
 
       - name: Run clippy
-        run: cargo clippy --bins --tests --benches --examples --all-features --all-targets -- -D warnings
+        run: cargo clippy --locked --bins --tests --benches --examples --all-features --all-targets -- -D warnings
 
   test:
     name: Test
@@ -85,7 +87,12 @@ jobs:
       - name: Run tests
         env:
           RUST_BACKTRACE: 1
-        run: cargo test --all-features --tests -- --nocapture
+        run: cargo test --locked --all-features --tests -- --nocapture
+
+      - name: Run doctests
+        env:
+          RUST_BACKTRACE: 1
+        run: cargo test --locked --all-features --doc
 
   lint-without-features:
     name: Lint without features
@@ -106,10 +113,10 @@ jobs:
       - name: Run clippy with `--no-default-features` for each crate
         run: |
           set -euo pipefail
-          crates=($(cargo metadata --format-version=1 --no-deps | jq -r '.packages[].name'))
+          crates=($(cargo metadata --locked --format-version=1 --no-deps | jq -r '.packages[].name'))
           total=${#crates[@]}
           for i in "${!crates[@]}"; do
             crate="${crates[$i]}"
             echo "[$((i+1))/$total] Checking $crate..."
-            cargo clippy -p "$crate" --bins --tests --benches --examples --no-default-features --all-targets -- -D warnings
+            cargo clippy --locked -p "$crate" --bins --tests --benches --examples --no-default-features --all-targets -- -D warnings
           done

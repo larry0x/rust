@@ -8,7 +8,7 @@ Use `just` recipes:
 
 - `just fmt`
 - `just lint` + `just lint-without-features`
-- `just test`
+- `just test` + `just test-doc`
 
 ## Regarding testing
 

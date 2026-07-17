@@ -8,6 +8,7 @@ documentation = "https://larry0x.github.io/rust/"
 edition       = "2024"
 license       = "TBD"
 repository    = "https://github.com/larry0x/rust"
+rust-version  = "1.85"
 version       = "0.0.0"
 
 [workspace.dependencies]

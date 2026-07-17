@@ -32,6 +32,10 @@ lint-without-features:
 test:
   RUST_BACKTRACE=1 cargo test --all-features --tests -- --nocapture
 
+# Run doctests
+test-doc:
+  RUST_BACKTRACE=1 cargo test --all-features --doc
+
 # Build documentation
 book:
   mdbook build --open
