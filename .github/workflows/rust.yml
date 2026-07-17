@@ -44,10 +44,10 @@ jobs:
           persist-credentials: false
 
       - name: Install toolchain
-        run: rustup toolchain install nightly --component rustfmt
+        run: rustup component add rustfmt
 
       - name: Run rustfmt checks
-        run: rustup run nightly cargo fmt --check --all
+        run: cargo fmt --check --all
 
   lint:
     name: Lint

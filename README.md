@@ -15,7 +15,7 @@ Opinionated template for multi-crate Rust workspaces, with:
 
 The following software is expected to be installed and available in `PATH`:
 
-- [rustup][rustup] – Rust toolchain manager. Both the stable and nightly toolchains are used: nightly for `rustfmt` (`rustfmt.toml` contains unstable options), stable for everything else.
+- [rustup][rustup] – Rust toolchain manager. Only the stable toolchain is used.
 - [just][just] – Command runner. See the `justfile` for available recipes.
 - [taplo][taplo] – TOML formatter. Configured by `taplo.toml`.
 - [markdownlint-cli2][markdownlint-cli2] – Markdown linter. Configured by `.markdownlint.json`.
