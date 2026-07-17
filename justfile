@@ -6,7 +6,7 @@ default:
 
 # Run rustfmt
 fmt:
-  cargo +nightly fmt --all
+  cargo fmt --all
 
 # Check whether the code compiles
 check:
